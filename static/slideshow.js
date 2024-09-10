@@ -1,5 +1,6 @@
 (function(eq, $, undefined) {
 	
+	var baseUrl = "/ggm-seismic-display/static";
 	var kind = {};
 	var images = {};
 	var sequence = [];
@@ -19,18 +20,11 @@
 		// Updates the slides
 		images.length = 0;
 		sequence.length = 0;
-		$.getJSON("/ggm-seismic-display-web/static/images.json", function(data){
+		$.getJSON(baseUrl + "images.json", function(data){
 			$.each(data, function(key, val) {
-				if (key == "images") {
-					$.each(val, function(k, v) {
-						if (k.startsWith(kind)) { images[k] = v; }
-					});
-				}
-				else {
-					$.each(val, function(i, v) {
-						if (v.startsWith(kind)) { sequence.push(v); }
-					});
-				 }
+				$.each(val, function(i, v) {
+					if (v.startsWith(kind)) { sequence.push(v); }
+				});
 			});
 			console.log(sequence);
 			eq.setQueue();
@@ -58,20 +52,23 @@
 		count += d.getMinutes() * (60000 / msPerSlide)
 		queue = queue.slice(count);
 
-		// Set initial slide
-		console.log("Showing " + queue[0]);
-		$("#slide").attr("src", "data:image/png;base64," + images[queue.shift()]);
-
+		// Set initial slide and timer
+		eq.updateImage();
 		eq.changeSlide();
 	}
 
 	eq.changeSlide = function() {
 		// Changes the slide
-		console.log("Showing " + queue[0]);
 		changeSlide = setTimeout(function() {
-			$("#slide").attr("src", "data:image/png;base64," + images[queue.shift()]);
+			eq.updateImage();
 			eq.changeSlide();
 		}, eq.getMsUntil(msPerSlide));
+	}
+
+
+	eq.updateImage = function() {
+		console.log("Showing " + queue[0]);
+		$("#slide").attr("src", baseUrl + queue.shift());
 	}
 
 	eq.getMsUntil = function(intervalMs) {
