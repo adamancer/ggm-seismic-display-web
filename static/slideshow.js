@@ -19,7 +19,7 @@
 		// Updates the slides
 		images.length = 0;
 		sequence.length = 0;
-		$.getJSON("static/images.json", function(data){
+		$.getJSON("/ggm-seismic-display-web/static/images.json", function(data){
 			$.each(data, function(key, val) {
 				if (key == "images") {
 					$.each(val, function(k, v) {
