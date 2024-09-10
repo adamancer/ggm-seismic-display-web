@@ -1,6 +1,6 @@
 (function(eq, $, undefined) {
 	
-	var baseUrl = "/ggm-seismic-display/static";
+	var baseUrl = "/ggm-seismic-display/static/";
 	var kind = {};
 	var images = {};
 	var sequence = [];
@@ -8,16 +8,20 @@
 	var changeSlide = null;
 	var updateSlides = null;
 
-	var msPerSlide = 3000;
+	var msPerSlide = 15000;
 	var msPerUpdate = 300000;
 	
 	eq.initPage = function(kind_) {
+		console.log("Initiating slideshow (kind=" + kind + ")")
+		
 		kind = kind_;
 		eq.updateSlides();
 	}
 
 	eq.updateSlides = function() {
 		// Updates the slides
+		console.log("Updating slides")
+		
 		images.length = 0;
 		sequence.length = 0;
 		$.getJSON(baseUrl + "images.json", function(data){
@@ -37,6 +41,7 @@
 
 	eq.setQueue = function() {
 		// Creates a queue of images to display
+		console.log("Updating queue")
 
 		queue.length = 0;
 		let seq = [];
@@ -58,6 +63,8 @@
 	}
 
 	eq.changeSlide = function() {
+		console.log("Changing slide")
+
 		// Changes the slide
 		changeSlide = setTimeout(function() {
 			eq.updateImage();
@@ -68,6 +75,7 @@
 
 	eq.updateImage = function() {
 		console.log("Showing " + queue[0]);
+		
 		$("#slide").attr("src", baseUrl + queue.shift());
 	}
 
