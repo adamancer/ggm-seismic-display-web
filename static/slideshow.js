@@ -1,5 +1,6 @@
 (function(eq, $, undefined) {
 	
+	var baseUrl = "/ggm-seismic-display-web/static/";
 	var kind = {};
 	var images = {};
 	var sequence = [];
@@ -7,30 +8,27 @@
 	var changeSlide = null;
 	var updateSlides = null;
 
-	var msPerSlide = 3000;
+	var msPerSlide = 15000;
 	var msPerUpdate = 300000;
 	
 	eq.initPage = function(kind_) {
+		console.log("Initiating slideshow (kind=" + kind + ")")
+		
 		kind = kind_;
 		eq.updateSlides();
 	}
 
 	eq.updateSlides = function() {
 		// Updates the slides
+		console.log("Updating slides")
+		
 		images.length = 0;
 		sequence.length = 0;
-		$.getJSON("/static/images.json", function(data){
+		$.getJSON(baseUrl + "images.json", function(data){
 			$.each(data, function(key, val) {
-				if (key == "images") {
-					$.each(val, function(k, v) {
-						if (k.startsWith(kind)) { images[k] = v; }
-					});
-				}
-				else {
-					$.each(val, function(i, v) {
-						if (v.startsWith(kind)) { sequence.push(v); }
-					});
-				 }
+				$.each(val, function(i, v) {
+					if (v.startsWith(kind)) { sequence.push(v); }
+				});
 			});
 			console.log(sequence);
 			eq.setQueue();
@@ -43,6 +41,7 @@
 
 	eq.setQueue = function() {
 		// Creates a queue of images to display
+		console.log("Updating queue")
 
 		queue.length = 0;
 		let seq = [];
@@ -58,20 +57,26 @@
 		count += d.getMinutes() * (60000 / msPerSlide)
 		queue = queue.slice(count);
 
-		// Set initial slide
-		console.log("Showing " + queue[0]);
-		$("#slide").attr("src", "data:image/png;base64," + images[queue.shift()]);
-
+		// Set initial slide and timer
+		eq.updateImage();
 		eq.changeSlide();
 	}
 
 	eq.changeSlide = function() {
+		console.log("Changing slide")
+
 		// Changes the slide
-		console.log("Showing " + queue[0]);
 		changeSlide = setTimeout(function() {
-			$("#slide").attr("src", "data:image/png;base64," + images[queue.shift()]);
+			eq.updateImage();
 			eq.changeSlide();
 		}, eq.getMsUntil(msPerSlide));
+	}
+
+
+	eq.updateImage = function() {
+		console.log("Showing " + queue[0]);
+		
+		$("#slide").attr("src", baseUrl + queue.shift());
 	}
 
 	eq.getMsUntil = function(intervalMs) {
