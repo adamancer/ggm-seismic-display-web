@@ -66,6 +66,7 @@
 		// Changes the slide
 		eq.log("Changing slide")
 
+		while (changeSlide--) { clearTimeout(changeSlide); }
 		changeSlide = setTimeout(function() {
 			eq.updateImage();
 			eq.changeSlide();
