@@ -1,7 +1,6 @@
 (function(eq, $, undefined) {
 	
 	var baseUrl = "/ggm-seismic-display-web/static/images/";
-	var baseUrl = "/static/images/";
 	var filter = {};
 	var sequence = [];
 	var queue = [];
