@@ -109,7 +109,6 @@
 	eq.clearTimeouts = function(key) {
 		// Clears existing timeouts under the given key
 		if (timeouts[key].length) {
-			console.log(timeouts[key]);
 			eq.log("Clearing timeouts[" + key + "]");
 			while (timeouts[key].length) {
 				clearTimeout(timeouts[key].pop());
